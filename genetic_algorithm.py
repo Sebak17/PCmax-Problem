@@ -23,13 +23,14 @@ class Genetic_algorithm:
 		for i in range(0, GENERATIONS_AMOUNT):
 			self.select_best_specimens()
 
-			if MUTATION_ENABLE and i % MUTATION_FREQUENCY:
-				self.mutate_random_specimen()
-
 			self.generate_next_generation()
 
 			self.solve_generation_tasks(processorsSize)
 
+			if MUTATION_ENABLE and i % MUTATION_FREQUENCY:
+				self.mutate_random_specimen()
+
+			self.solve_generation_tasks(processorsSize)
 
 			self.generation_best_Tmax.append(self.find_best_specimen().Tmax)
 
@@ -72,6 +73,8 @@ class Genetic_algorithm:
 			del self.currentGeneration[specimenId]
 			del t_max[specimenId]
 
+
+
 	def find_best_specimen(self):
 		bestSpecimen = None
 
@@ -79,6 +82,17 @@ class Genetic_algorithm:
 			if bestSpecimen is None:
 				bestSpecimen = specimen
 			elif bestSpecimen.Tmax > specimen.Tmax:
+				bestSpecimen = specimen
+
+		return bestSpecimen
+
+	def find_worst_specimen(self):
+		bestSpecimen = None
+
+		for specimen in self.currentGeneration:
+			if bestSpecimen is None:
+				bestSpecimen = specimen
+			elif bestSpecimen.Tmax < specimen.Tmax:
 				bestSpecimen = specimen
 
 		return bestSpecimen
@@ -143,11 +157,15 @@ class Genetic_algorithm:
 		return nextSpecimen
 
 	def mutate_random_specimen(self):
-		specimen = random.choice(self.currentGeneration)
+		bestSpecimenTasks = self.find_best_specimen().tasks.copy()
+		worstSpecimen = self.find_worst_specimen()
 
-		task1 = random.randint(0, len(specimen.tasks) - 1)
+		task1 = random.randint(0, len(bestSpecimenTasks) - 1)
 		task2 = task1
 		while task1 == task2:
-			task2 = random.randint(0, len(specimen.tasks) - 1)
+			task2 = random.randint(0, len(bestSpecimenTasks) - 1)
 
-		specimen.tasks[task1], specimen.tasks[task2] = specimen.tasks[task2], specimen.tasks[task1]
+		bestSpecimenTasks[task1], bestSpecimenTasks[task2] = bestSpecimenTasks[task2], bestSpecimenTasks[task1]
+
+		worstSpecimen.Tmax = None
+		worstSpecimen.tasks = bestSpecimenTasks
