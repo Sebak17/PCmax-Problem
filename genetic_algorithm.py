@@ -7,10 +7,12 @@ greedy_algorithm = Greedy_algorithm()
 
 class Genetic_algorithm:
 
+	generation_best_Tmax = []
+
 	generation = 0
 
 	currentSpecimenId = 0
-	currentGeneration = {}
+	currentGeneration = []
 
 	def start(self, processorsSize, tasks):
 
@@ -18,9 +20,22 @@ class Genetic_algorithm:
 
 		self.solve_generation_tasks(processorsSize)
 
-		self.print_generation()
+		for i in range(0, GENERATIONS_AMOUNT):
+			self.select_best_specimens()
 
-		self.select_best_specimens()
+			if MUTATION_ENABLE and i % MUTATION_FREQUENCY:
+				self.mutate_random_specimen()
+
+			self.generate_next_generation()
+
+			self.solve_generation_tasks(processorsSize)
+
+
+			self.generation_best_Tmax.append(self.find_best_specimen().Tmax)
+
+
+
+		#self.print_generation()
 
 
 	def generate_first_generation(self, tasks):
@@ -32,7 +47,7 @@ class Genetic_algorithm:
 
 			specimenTasks[el1], specimenTasks[el2] = specimenTasks[el2], specimenTasks[el1]
 
-			self.currentGeneration[self.currentSpecimenId] = Specimen(self.currentSpecimenId, specimenTasks.copy())
+			self.currentGeneration.append(Specimen(self.currentSpecimenId, specimenTasks.copy()))
 			self.currentSpecimenId += 1
 
 		self.generation = 1
@@ -51,12 +66,87 @@ class Genetic_algorithm:
 		for key, specimen in self.currentGeneration.items():
 			t_max.append(specimen.Tmax)
 
-		for i in range(0,3):
-			maxx = max(t_max)
-			index = t_max.index(maxx)
-			#print(index)
-			del self.currentGeneration[index]
-			t_max[index] = 0
+		for _ in range(0, int(POPULATION_SIZE / 2)):
+			specimenId = t_max.index(max(t_max))
+			del self.currentGeneration[specimenId]
+			del t_max[specimenId]
 
-		self.print_generation()
-			
+	def find_best_specimen(self):
+		bestSpecimen = None
+
+		for specimen in self.currentGeneration:
+			if bestSpecimen is None:
+				bestSpecimen = specimen
+			elif bestSpecimen.Tmax > specimen.Tmax:
+				bestSpecimen = specimen
+
+		return bestSpecimen
+
+	def generate_next_generation(self):
+		nextGeneration = []
+		self.generation += 1
+
+		nextGeneration.append(self.find_best_specimen())
+
+		missingSpecimens = POPULATION_SIZE - 1
+
+		while missingSpecimens > 0:
+			for firstSpecimen in self.currentGeneration:
+
+				other_specimens = self.currentGeneration.copy()
+				del other_specimens[other_specimens.index(firstSpecimen)]
+
+				secondSpecimen = random.choice(other_specimens)
+
+				nextSpecimen = self.cross_specimens(firstSpecimen, secondSpecimen)
+				nextGeneration.append(nextSpecimen)
+
+				missingSpecimens -= 1
+
+				if missingSpecimens == 0:
+					break
+
+
+		self.currentGeneration = nextGeneration
+
+	def cross_specimens(self, firstSpecimen, secondSpecimen):
+		newTasksList = []
+
+		if random.choice([True, False]):
+			baseTasks = firstSpecimen.tasks.copy()
+			secondaryTasks = secondSpecimen.tasks.copy()
+		else:
+			baseTasks = secondSpecimen.tasks.copy()
+			secondaryTasks = firstSpecimen.tasks.copy()
+
+
+		startTaskIndex = random.randint(0, (len(baseTasks) // 2) - 1)
+		endTaskIndex = random.randint(startTaskIndex + 3, len(baseTasks))
+		baseSelectedTasks = baseTasks[startTaskIndex:endTaskIndex]
+
+		for task in baseSelectedTasks:
+			del secondaryTasks[secondaryTasks.index(task)]
+		random.shuffle(secondaryTasks)
+
+		for i in range(0, len(baseTasks)):
+			if i < startTaskIndex or i >= endTaskIndex:
+				newTasksList.append(secondaryTasks[0])
+				del secondaryTasks[0]
+			else:
+				newTasksList.append(baseSelectedTasks[0])
+				del baseSelectedTasks[0]
+
+		nextSpecimen = Specimen(self.currentSpecimenId, newTasksList)
+		self.currentSpecimenId += 1
+
+		return nextSpecimen
+
+	def mutate_random_specimen(self):
+		specimen = random.choice(self.currentGeneration)
+
+		task1 = random.randint(0, len(specimen.tasks) - 1)
+		task2 = task1
+		while task1 == task2:
+			task2 = random.randint(0, len(specimen.tasks) - 1)
+
+		specimen.tasks[task1], specimen.tasks[task2] = specimen.tasks[task2], specimen.tasks[task1]
