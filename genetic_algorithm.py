@@ -53,17 +53,18 @@ class Genetic_algorithm:
 		self.generation = 1
 
 	def solve_generation_tasks(self, processorsSize):
-		for key, specimen in self.currentGeneration.items():
+		for specimen in self.currentGeneration:
 			specimen.Tmax = greedy_algorithm.solve(processorsSize, specimen.tasks)
 
 	def print_generation(self):
-		for key, specimen in self.currentGeneration.items():
+		print("==================[ GENERATION " + str(self.generation) + " ]==================")
+		for specimen in self.currentGeneration:
 			print("Specimen " + str(specimen.id) + ":", "Tmax: " + str(specimen.Tmax), specimen.tasks)
+		print("====================================================")
 
 	def select_best_specimens(self):
-		#print(self.currentGeneration)
 		t_max = []
-		for key, specimen in self.currentGeneration.items():
+		for specimen in self.currentGeneration:
 			t_max.append(specimen.Tmax)
 
 		for _ in range(0, int(POPULATION_SIZE / 2)):
