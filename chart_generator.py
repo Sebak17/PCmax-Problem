@@ -1,9 +1,9 @@
 import matplotlib.pyplot as plt
 
-class Chart_generator:
 
+class ChartGenerator:
 
-	def generateChartComparingGenerationsWithGreedy(self, greedy_Tmax, generations_data_Tmax):
+	def generate_chart_comparing_generations_with_greedy(self, greedy_Tmax, generations_data_Tmax):
 		greedy_Tmax_list = []
 		for i in range(0, len(generations_data_Tmax)):
 			greedy_Tmax_list.append(greedy_Tmax)
@@ -22,5 +22,5 @@ class Chart_generator:
 		plt.title('Porównanie algorytmów\n zachłannego i genetycznego\n w zależności od pokolenia')
 
 		plt.legend()
-		plt.savefig('greedy-generation-comparison.png')
+		plt.savefig('results/greedy-generation-comparison.png')
 		plt.show()

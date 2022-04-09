@@ -1,4 +1,4 @@
-class Greedy_algorithm:
+class GreedyAlgorithm:
 	def solve(self, processorsSize, tasks):
 		processors = {}
 

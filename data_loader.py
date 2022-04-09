@@ -1,9 +1,15 @@
-class Data_loader:
-	def load(self, fileName):
-		f = open("data/" + fileName)
-		data = f.read()
-		data = data.split()
-		data2 = []
+class DataLoader:
+	def load(self, file_name):
+		file = open("data/" + file_name)
+		file_content = file.read()
+		data = file_content.split()
+		tasks = []
+
 		for i in data[2:]:
-			data2.append(int(i))
-		return int(data[0]), int(data[1]), data2
+			tasks.append(int(i))
+
+		return {
+			"processors": int(data[0]),
+			"tasksSize": int(data[1]),
+			"tasks": tasks,
+		}

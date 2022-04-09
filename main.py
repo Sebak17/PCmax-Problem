@@ -1,23 +1,22 @@
-from data_loader import Data_loader
-from greedy_algorithm import Greedy_algorithm
-from genetic_algorithm import Genetic_algorithm
-from chart_generator import Chart_generator
+from data_loader import DataLoader
+from greedy_algorithm import GreedyAlgorithm
+from genetic_algorithm import GeneticAlgorithm
+from chart_generator import ChartGenerator
 
-data_loader = Data_loader()
-greedy_algorithm = Greedy_algorithm()
-genetic_algorithm = Genetic_algorithm()
-chart_generator = Chart_generator()
+dataLoader = DataLoader()
+greedyAlgorithm = GreedyAlgorithm()
+geneticAlgorithm = GeneticAlgorithm()
+chartGenerator = ChartGenerator()
 
 if __name__ == "__main__":
-	proces, nr_of_elements, tasks = data_loader.load("m50n200.txt")
+	fileData = dataLoader.load("m50n200.txt")
 
-	greedy_Tmax = greedy_algorithm.solve(proces, tasks)
+	greedy_Tmax = greedyAlgorithm.solve(fileData["processors"], fileData["tasks"])
 
-	genetic_algorithm.start(proces, tasks)
-
-	bestSpecimen = genetic_algorithm.find_best_specimen()
-
-	chart_generator.generateChartComparingGenerationsWithGreedy(greedy_Tmax, genetic_algorithm.generation_best_Tmax)
+	geneticAlgorithm.start(fileData["processors"], fileData["tasks"])
+	bestSpecimen = geneticAlgorithm.find_best_specimen()
 
 	print("Greedy: ", greedy_Tmax)
-	print("Genetic: ", bestSpecimen.id, " Tmax:", bestSpecimen.Tmax)
+	print("Genetic: ", bestSpecimen.id, " Tmax:", bestSpecimen.Tmax, " Generation ", str(bestSpecimen.generation) + "/" + str(geneticAlgorithm.generation))
+
+	chartGenerator.generate_chart_comparing_generations_with_greedy(greedy_Tmax, geneticAlgorithm.generation_best_Tmax)
