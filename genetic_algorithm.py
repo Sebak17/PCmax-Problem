@@ -1,7 +1,9 @@
 from greedy_algorithm import GreedyAlgorithm
 from specimen import Specimen
 from config import *
+
 import random
+import time
 
 greedyAlgorithm = GreedyAlgorithm()
 
@@ -23,9 +25,12 @@ class GeneticAlgorithm:
 
 		self.add_best_specimen_to_chart_data()
 
-		self.print_generation()
+		finalTime = time.time() + MAX_EXECUTION_TIME
 
-		for i in range(0, GENERATIONS_AMOUNT):
+		for i in range(0, GENERATIONS_AMOUNT - 1):
+			if MAX_EXECUTION_TIME is not None and finalTime < time.time():
+				break
+
 			self.select_best_specimens()
 
 			self.generate_next_generation()
@@ -38,6 +43,12 @@ class GeneticAlgorithm:
 			self.solve_generation_tasks(processors_size)
 
 			self.add_best_specimen_to_chart_data()
+
+	def reset(self):
+		self.generation_best_Tmax = []
+		self.generation = 0
+		self.currentSpecimenId = 0
+		self.currentGeneration = []
 
 	def add_best_specimen_to_chart_data(self):
 		self.generation_best_Tmax.append(self.find_best_specimen().Tmax)

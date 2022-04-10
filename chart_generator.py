@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 class ChartGenerator:
@@ -23,4 +24,32 @@ class ChartGenerator:
 
 		plt.legend()
 		plt.savefig('results/greedy-generation-comparison.png')
+		plt.show()
+
+	def generate_chart_random_data(self, procesors, data):
+		labels = []
+		greedy = []
+		genetic = []
+		for el in data:
+			labels.append(el['tasks_amount'])
+			greedy.append(el['greedy'])
+			genetic.append(el['genetic'])
+
+		x = np.arange(len(labels))
+		width = 0.35
+
+		fig, ax = plt.subplots()
+		rects1 = ax.bar(x - width / 2, greedy, width, label='zachłanny', color='blue')
+		rects2 = ax.bar(x + width / 2, genetic, width, label='genetyczny', color='green')
+
+		ax.set_ylabel('Tmax')
+		ax.set_title('Porównanie algorytmów\n zachłannego i genetycznego\n dla ' + str(procesors) + ' procesorów')
+		ax.set_xticks(x, labels)
+		ax.legend()
+
+		ax.bar_label(rects1, padding=3)
+		ax.bar_label(rects2, padding=3)
+
+		fig.tight_layout()
+		plt.savefig('results/random-data.png')
 		plt.show()
