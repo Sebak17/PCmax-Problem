@@ -25,10 +25,11 @@ class GeneticAlgorithm:
 
 		self.add_best_specimen_to_chart_data()
 
-		finalTime = time.time() + MAX_EXECUTION_TIME
+		if MAX_EXECUTION_TIME is not None:
+			self.finalTime = time.time() + MAX_EXECUTION_TIME
 
 		for i in range(0, GENERATIONS_AMOUNT - 1):
-			if MAX_EXECUTION_TIME is not None and finalTime < time.time():
+			if MAX_EXECUTION_TIME is not None and self.finalTime < time.time():
 				break
 
 			self.select_best_specimens()

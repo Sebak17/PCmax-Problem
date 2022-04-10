@@ -44,7 +44,7 @@ def check_file_data(filename):
 	print("Greedy: ", greedy_Tmax)
 	print("Genetic: ", best_specimen.id, " Tmax:", best_specimen.Tmax, " Generation ", str(best_specimen.generation) + "/" + str(geneticAlgorithm.generation))
 
-	#chartGenerator.generate_chart_comparing_generations_with_greedy(greedy_Tmax, geneticAlgorithm.generation_best_Tmax)
+	chartGenerator.generate_chart_comparing_generations_with_greedy(greedy_Tmax, geneticAlgorithm.generation_best_Tmax)
 
 
 if __name__ == "__main__":
