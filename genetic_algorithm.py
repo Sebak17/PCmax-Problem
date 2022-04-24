@@ -45,6 +45,8 @@ class GeneticAlgorithm:
 
 			self.add_best_specimen_to_chart_data()
 
+			print(str(i) + "/" + str(GENERATIONS_AMOUNT))
+
 	def reset(self):
 		self.generation_best_Tmax = []
 		self.generation = 0
@@ -57,6 +59,8 @@ class GeneticAlgorithm:
 	def generate_first_generation(self, tasks):
 		specimen_tasks = tasks.copy()
 		self.generation = 1
+
+		specimen_tasks.sort(reverse=True)
 
 		for i in range(0, POPULATION_SIZE, 1):
 			el1 = random.randrange(0, len(specimen_tasks))
