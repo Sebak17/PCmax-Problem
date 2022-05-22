@@ -45,7 +45,8 @@ class GeneticAlgorithm:
 
 			self.add_best_specimen_to_chart_data()
 
-			print(str(i) + "/" + str(GENERATIONS_AMOUNT))
+			if DEBUG:
+				print(str(i) + "/" + str(GENERATIONS_AMOUNT))
 
 	def reset(self):
 		self.generation_best_Tmax = []
